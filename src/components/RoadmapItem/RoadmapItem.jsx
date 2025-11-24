@@ -3,25 +3,8 @@ import { Link } from 'react-router-dom';
 import './RoadmapItem.css';
 
 const RoadmapItem = ({ item, onStatusChange }) => {
-  // Добавляем проверку на существование item
-  if (!item) {
-    return (
-      <div className="roadmap-item error">
-        <div className="item-main">
-          <div className="item-content">
-            <div className="item-header">
-              <h3 className="item-title">Ошибка: элемент не найден</h3>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   const getStatusInfo = (status) => {
-    // Добавляем значение по умолчанию
-    const actualStatus = status || 'not_started';
-    switch (actualStatus) {
+    switch (status) {
       case 'completed':
         return { 
           class: 'status-completed', 
@@ -49,9 +32,7 @@ const RoadmapItem = ({ item, onStatusChange }) => {
   const statusInfo = getStatusInfo(item.status);
 
   const handleStatusChange = (newStatus) => {
-    if (onStatusChange) {
-      onStatusChange(newStatus);
-    }
+    onStatusChange(newStatus);
   };
 
   return (
@@ -59,7 +40,7 @@ const RoadmapItem = ({ item, onStatusChange }) => {
       <div className="item-main">
         <Link to={`/item/${item.id}`} className="item-content-link">
           <div className="item-header">
-            <h3 className="item-title">{item.name || 'Без названия'}</h3>
+            <h3 className="item-title">{item.name}</h3>
             <span 
               className="status-badge"
               style={{ backgroundColor: statusInfo.color }}
@@ -68,7 +49,7 @@ const RoadmapItem = ({ item, onStatusChange }) => {
             </span>
           </div>
           
-          <p className="item-description">{item.description || 'Описание отсутствует'}</p>
+          <p className="item-description">{item.description}</p>
           
           {item.dueDate && (
             <div className="due-date">
@@ -93,7 +74,7 @@ const RoadmapItem = ({ item, onStatusChange }) => {
 
       <div className="item-actions">
         <select 
-          value={item.status || 'not_started'} 
+          value={item.status} 
           onChange={(e) => handleStatusChange(e.target.value)}
           className="status-select"
           style={{ borderColor: statusInfo.color }}

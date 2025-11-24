@@ -24,35 +24,47 @@ export const loadRoadmapFromFile = (file) => {
           throw new Error('Отсутствует или некорректный массив пунктов');
         }
         
-        // Фильтруем и валидируем каждый пункт
-        const validItems = roadmap.items
-          .filter(item => item && typeof item === 'object')
-          .map((item, index) => {
-            if (!item.id || typeof item.id !== 'string') {
-              throw new Error(`Пункт ${index + 1}: отсутствует или некорректный идентификатор`);
-            }
-            
-            if (!item.name || typeof item.name !== 'string') {
-              throw new Error(`Пункт ${index + 1}: отсутствует или некорректное название`);
-            }
-            
-            if (!item.description || typeof item.description !== 'string') {
-              throw new Error(`Пункт ${index + 1}: отсутствует или некорректное описание`);
-            }
-            
-            // Добавляем значения по умолчанию
-            return {
-              status: 'not_started',
-              notes: '',
-              dueDate: null,
-              ...item,
-              links: Array.isArray(item.links) ? item.links : []
-            };
-          });
+        // Валидация каждого пункта
+        roadmap.items.forEach((item, index) => {
+          if (!item.id || typeof item.id !== 'string') {
+            throw new Error(`Пункт ${index + 1}: отсутствует или некорректный идентификатор`);
+          }
+          
+          if (!item.name || typeof item.name !== 'string') {
+            throw new Error(`Пункт ${index + 1}: отсутствует или некорректное название`);
+          }
+          
+          if (!item.description || typeof item.description !== 'string') {
+            throw new Error(`Пункт ${index + 1}: отсутствует или некорректное описание`);
+          }
+          
+          if (item.links && !Array.isArray(item.links)) {
+            throw new Error(`Пункт ${index + 1}: ссылки должны быть массивом`);
+          }
+          
+          if (item.links) {
+            item.links.forEach((link, linkIndex) => {
+              if (!link.title || typeof link.title !== 'string') {
+                throw new Error(`Пункт ${index + 1}, ссылка ${linkIndex + 1}: отсутствует заголовок`);
+              }
+              if (!link.url || typeof link.url !== 'string') {
+                throw new Error(`Пункт ${index + 1}, ссылка ${linkIndex + 1}: отсутствует URL`);
+              }
+            });
+          }
+        });
         
+        // Добавляем поля по умолчанию если их нет
         const processedRoadmap = {
           ...roadmap,
-          items: validItems
+          items: roadmap.items.map(item => ({
+            status: 'not_started',
+            notes: '',
+            dueDate: null,
+            ...item,
+            // Убеждаемся, что links всегда массив
+            links: item.links || []
+          }))
         };
         
         resolve(processedRoadmap);

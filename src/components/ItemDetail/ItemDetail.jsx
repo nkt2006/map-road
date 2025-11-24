@@ -5,9 +5,7 @@ import './ItemDetail.css';
 const ItemDetail = ({ roadmap, updateItem }) => {
   const { id } = useParams();
   const navigate = useNavigate();
-  
-  // Безопасное получение элемента
-  const item = roadmap?.items?.find(item => item && item.id === id);
+  const item = roadmap?.items.find(item => item.id === id);
 
   const [notes, setNotes] = useState('');
   const [status, setStatus] = useState('not_started');
@@ -35,13 +33,11 @@ const ItemDetail = ({ roadmap, updateItem }) => {
   }
 
   const handleSave = () => {
-    if (updateItem) {
-      updateItem(id, {
-        notes: notes.trim(),
-        status,
-        dueDate: dueDate || null
-      });
-    }
+    updateItem(id, {
+      notes: notes.trim(),
+      status,
+      dueDate: dueDate || null
+    });
     navigate('/');
   };
 
@@ -54,8 +50,7 @@ const ItemDetail = ({ roadmap, updateItem }) => {
   };
 
   const getStatusInfo = (status) => {
-    const actualStatus = status || 'not_started';
-    switch (actualStatus) {
+    switch (status) {
       case 'completed':
         return { text: 'Завершено', color: '#28a745' };
       case 'in_progress':
@@ -74,7 +69,7 @@ const ItemDetail = ({ roadmap, updateItem }) => {
           <Link to="/" className="back-button">
             ← Назад к дорожной карте
           </Link>
-          <h1>{item.name || 'Без названия'}</h1>
+          <h1>{item.name}</h1>
           <div 
             className="current-status-badge"
             style={{ backgroundColor: statusInfo.color }}
@@ -87,7 +82,7 @@ const ItemDetail = ({ roadmap, updateItem }) => {
           <div className="detail-section">
             <h3>📋 Описание темы</h3>
             <div className="description-content">
-              <p>{item.description || 'Описание отсутствует'}</p>
+              <p>{item.description}</p>
             </div>
           </div>
 

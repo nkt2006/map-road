@@ -15,33 +15,18 @@ const Roadmap = ({ roadmap, updateItem }) => {
     );
   }
 
-  // Добавляем проверку на существование items
-  if (!roadmap.items || !Array.isArray(roadmap.items)) {
-    return (
-      <div className="roadmap-empty">
-        <div className="empty-state">
-          <h2>Ошибка загрузки дорожной карты</h2>
-          <p>Структура данных некорректна. Пожалуйста, загрузите другой файл.</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Фильтруем некорректные элементы
-  const validItems = roadmap.items.filter(item => item && item.id);
-
   // Группировка элементов по статусу
   const itemsByStatus = {
-    not_started: validItems.filter(item => (item.status || 'not_started') === 'not_started'),
-    in_progress: validItems.filter(item => (item.status || 'not_started') === 'in_progress'),
-    completed: validItems.filter(item => (item.status || 'not_started') === 'completed')
+    not_started: roadmap.items.filter(item => item.status === 'not_started'),
+    in_progress: roadmap.items.filter(item => item.status === 'in_progress'),
+    completed: roadmap.items.filter(item => item.status === 'completed')
   };
 
   return (
     <div className="roadmap">
       <div className="roadmap-header">
-        <h1>{roadmap.title || 'Без названия'}</h1>
-        <p className="roadmap-description">{roadmap.description || 'Описание отсутствует'}</p>
+        <h1>{roadmap.title}</h1>
+        <p className="roadmap-description">{roadmap.description}</p>
       </div>
 
       <div className="roadmap-grid">
@@ -56,7 +41,7 @@ const Roadmap = ({ roadmap, updateItem }) => {
               <RoadmapItem 
                 key={item.id} 
                 item={item}
-                onStatusChange={(newStatus) => updateItem && updateItem(item.id, { status: newStatus })}
+                onStatusChange={(newStatus) => updateItem(item.id, { status: newStatus })}
               />
             ))}
             {itemsByStatus.not_started.length === 0 && (
@@ -76,7 +61,7 @@ const Roadmap = ({ roadmap, updateItem }) => {
               <RoadmapItem 
                 key={item.id} 
                 item={item}
-                onStatusChange={(newStatus) => updateItem && updateItem(item.id, { status: newStatus })}
+                onStatusChange={(newStatus) => updateItem(item.id, { status: newStatus })}
               />
             ))}
             {itemsByStatus.in_progress.length === 0 && (
@@ -96,7 +81,7 @@ const Roadmap = ({ roadmap, updateItem }) => {
               <RoadmapItem 
                 key={item.id} 
                 item={item}
-                onStatusChange={(newStatus) => updateItem && updateItem(item.id, { status: newStatus })}
+                onStatusChange={(newStatus) => updateItem(item.id, { status: newStatus })}
               />
             ))}
             {itemsByStatus.completed.length === 0 && (

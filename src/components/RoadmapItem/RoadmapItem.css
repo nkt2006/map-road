@@ -151,13 +151,3 @@
     width: 100%;
   }
 }
-
-
-.roadmap-item.error {
-  border-left-color: #dc3545;
-  background: #f8d7da;
-}
-
-.roadmap-item.error .item-title {
-  color: #721c24;
-}

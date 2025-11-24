@@ -12,6 +12,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Загрузка примерной карты при первом рендере
   useEffect(() => {
     setRoadmap(sampleRoadmap);
   }, []);
